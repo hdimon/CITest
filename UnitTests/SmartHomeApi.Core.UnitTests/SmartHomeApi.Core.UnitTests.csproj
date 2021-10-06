@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	  <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\SharedAssemblyInfo.cs" Link="SharedAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SmartHomeApi.Core\SmartHomeApi.Core.csproj" />
+    <ProjectReference Include="..\..\SmartHomeApi.ItemUtils\SmartHomeApi.ItemUtils.csproj" />
+    <ProjectReference Include="..\SmartHomeApi.UnitTestsBase\SmartHomeApi.UnitTestsBase.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="InputTestData\PluginWithLocatorConstructorTimeout\PluginWithLocatorConstructorTimeout.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\StandardTestPlugin1Changed\StandardTestPlugin1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\StandardTestPluginWithDependency1\Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\StandardTestPluginWithDependency1\StandardTestPluginWithDependency1.deps.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\StandardTestPluginWithDependency1\StandardTestPluginWithDependency1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\TestConfigs\InvalidConfigWithoutItemType.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\TestConfigs\InvalidConfigWithoutItemId.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\TestConfigs\InvalidConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\TestConfigs\TestItem2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\TestConfigs\TestItem1Changed.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\TestConfigs\TestItem1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SmartHomeApiDataTest\Readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="InputTestData\StandardTestPlugin1\StandardTestPlugin1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

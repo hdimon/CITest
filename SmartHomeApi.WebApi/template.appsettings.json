@@ -1,0 +1,61 @@
+{
+    "AppSettings": {
+        "ApiCulture": "en-US",
+        "DataDirectoryPath": "C:\\SmartHomeApiData",
+        "ItemsPluginsLocator": {
+            "SoftPluginsLoading": true
+        },
+        "ItemsLocatorIntervalMs": 5000,
+        "UntrackedItems": [
+            {
+                "ItemId": "TestItem1" //Whole item will not be tracked
+            },
+            {
+                "ItemId": "TestItem2",
+                "ApplyOnlyEnumeratedStates": true, //Only fields enumerated in "States" array will not be tracked
+                "States": [ "StateField1" ] //other fields will still be tracked
+            }
+        ],
+        "UncachedItems": [
+            {
+                "ItemId": "TestItem1" //Whole item will not be cached in global state, i.e. state returned by GetState() method
+            },
+            {
+                "ItemId": "TestItem2",
+                "ApplyOnlyEnumeratedStates": true, //Only fields enumerated in "States" array will not be cached in global state
+                "States": [ "StateField1" ] //Pay attention that these fields are still accessible when getting state by ItemId or Parameter
+            }
+        ]
+    },
+    "Kestrel": {
+        "EndPoints": {
+            "Http": {
+                "Url": "http://0.0.0.0:5100"
+            }
+        }
+    },
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
+        }
+    },
+    "AllowedHosts": "*",
+    "Serilog": {
+        "WriteTo": [
+            {
+                "MinimumLevel": "Debug",
+                "Name": "File",
+                "Args": {
+                    "path": "Logs\\SmartHomeApi-.log",
+                    "rollingInterval": "Day",
+                    "rollOnFileSizeLimit": true,
+                    "fileSizeLimitBytes": 5242880,
+                    "restrictedToMinimumLevel": "Debug",
+                    "outputTemplate": "{Timestamp:dd-MM-yyyy HH:mm:ss.fff} [{Level:u4}] [{User}] {Message:lj}{NewLine}{Exception}"
+                }
+            }
+        ]
+    }
+}
