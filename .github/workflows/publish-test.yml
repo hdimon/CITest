@@ -12,7 +12,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    if: ${{ startsWith(GITHUB_REF, '[dev]||[release]') }}
+    if: ${{ startsWith(github.ref, '[dev]||[release]') }}
     
 
     # Steps represent a sequence of tasks that will be executed as part of the job
