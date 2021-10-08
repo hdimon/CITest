@@ -47,7 +47,7 @@ jobs:
         name: Check brach type
         id: check-brach-type
         with:
-          text: ${{ GITHUB_REF##*/ }}
+          text: ${{ GITHUB_REF }}
           regex: '^(dev|release)-[0-9]+\.[0-9]+$'
             
   build:
