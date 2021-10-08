@@ -1,17 +1,14 @@
 # This is a basic workflow to help you get started with Actions
 #add env variable with version; is suffix is provided then take it, otherwise if dev branch then alpha-GITHUB_RUN_NUMBER suffix (1.14.0-alpha-20), if release then rc-GITHUB_RUN_NUMBER (1.14.0-rc-20)
-name: publish-test
+name: publish
 
 # Controls when the workflow will run
 on:
   workflow_dispatch:
-  
-  workflow_call:
     inputs:
       version-suffix:
         description: 'Version suffix (alpha-1, cr-3, ...)'
         required: false
-        type: string
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
