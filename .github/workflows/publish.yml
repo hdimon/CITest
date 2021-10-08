@@ -17,9 +17,12 @@ jobs:
     outputs:
       match: ${{ steps.check-suffix.outputs.match }}
       mode: ${{ steps.set-mode.outputs.mode }}
+      branch-type: ${{ steps.check-brach-type.outputs.group1 }}
     steps:
+      - uses: actions/checkout@v2
+      
       - uses: actions-ecosystem/action-regex-match@v2
-        name: check version suffix ${{ github.event.inputs.version-suffix }}
+        name: Check version suffix ${{ github.event.inputs.version-suffix }}
         id: check-suffix
         with:
           text: ${{ github.event.inputs.version-suffix }}
@@ -40,6 +43,13 @@ jobs:
                 echo "::set-output name=mode::${{ steps.check-suffix.outputs.group1 }}"
             fi
             
+      - uses: actions-ecosystem/action-regex-match@v2
+        name: Check brach type ${{ GITHUB_REF##*/ }}
+        id: check-brach-type
+        with:
+          text: ${{ GITHUB_REF##*/ }}
+          regex: '^(dev|release)-[0-9]+\.[0-9]+$'
+            
   build:
     needs: [check_suffix]
     #if: ${{ needs.check_suffix.outputs.match != '' }}
@@ -56,11 +66,11 @@ jobs:
       - name: Version mode
         run: echo Version mode is ${{ needs.check_suffix.outputs.mode }}
         
-      #- name: Test
-        #run: echo Test is ${{ needs.check_suffix.outputs.test }}
-        
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
+        
+      - name: Branch type
+        run: echo running on branch type ${{ needs.check_suffix.outputs.branch-type }}
 
       # Runs a single command using the runners shell
       #- name: Run a one-line script
