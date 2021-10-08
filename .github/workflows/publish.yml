@@ -44,7 +44,7 @@ jobs:
             fi
             
       - uses: actions-ecosystem/action-regex-match@v2
-        name: Check brach type ${{ GITHUB_REF##*/ }}
+        name: Check brach type
         id: check-brach-type
         with:
           text: ${{ GITHUB_REF##*/ }}
