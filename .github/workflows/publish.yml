@@ -5,6 +5,13 @@ name: publish-test
 # Controls when the workflow will run
 on:
   workflow_dispatch:
+  
+  workflow_call:
+    inputs:
+      version-suffix:
+        description: 'Version suffix (alpha-1, cr-3, ...)'
+        required: false
+        type: string
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,6 +26,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
+      - name: Version suffix
+        run: echo Version suffix is ${{ inputs.version-suffix }}
+        
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
 
