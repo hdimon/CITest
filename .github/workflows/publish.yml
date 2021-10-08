@@ -20,7 +20,7 @@ jobs:
       - name: check version suffix ${{ github.event.inputs.version-suffix }}
         id: check-suffix
         run: |
-          if 1 == 1; then
+          if ${{1 == 1}}; then
             echo "::set-output name=run_jobs::true"
           else
             echo "::set-output name=run_jobs::false"
