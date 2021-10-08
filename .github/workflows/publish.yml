@@ -37,7 +37,7 @@ jobs:
       - name: Set mode
         id: set-mode
         run: |
-            if [[ "${{ steps.check-suffix.outputs.group1 }}" == "" ]]; then
+            if [[ "${{ github.event.inputs.version-suffix }}" == "" || "${{ github.event.inputs.version-suffix }}" == "release" ]]; then
                 echo "::set-output name=mode::release"
             else
                 echo "::set-output name=mode::${{ steps.check-suffix.outputs.group1 }}"
@@ -52,7 +52,7 @@ jobs:
             
   build:
     needs: [check_data]
-    #if: ${{ needs.check_data.outputs.match != '' }}
+    if: ${{ needs.check_data.outputs.mode != '' }}
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
