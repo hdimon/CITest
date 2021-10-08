@@ -14,8 +14,9 @@ on:
 jobs:
   check_suffix:
     runs-on: ubuntu-latest
-    #outputs:
+    outputs:
       #run_other_jobs: ${{ steps.check-suffix.outputs.run_jobs }}
+      match: ${{ steps.check-suffix.outputs.match }}
     steps:
       - uses: actions-ecosystem/action-regex-match@v2
         name: check version suffix ${{ github.event.inputs.version-suffix }}
@@ -26,11 +27,11 @@ jobs:
             
   build:
     needs: [check_suffix]
-    if: ${{ steps.check_suffix.outputs.match != '' }}
+    if: ${{ needs.check_suffix.outputs.match != '' }}
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:       
+    steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
