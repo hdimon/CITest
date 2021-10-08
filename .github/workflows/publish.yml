@@ -12,7 +12,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  check_suffix:
+  check_data:
     runs-on: ubuntu-latest
     outputs:
       match: ${{ steps.check-suffix.outputs.match }}
@@ -51,8 +51,8 @@ jobs:
           regex: '^refs\/heads\/(dev|release)-[0-9]+\.[0-9]+$'
             
   build:
-    needs: [check_suffix]
-    #if: ${{ needs.check_suffix.outputs.match != '' }}
+    needs: [check_data]
+    #if: ${{ needs.check_data.outputs.match != '' }}
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -64,13 +64,13 @@ jobs:
         run: echo Version suffix is ${{ github.event.inputs.version-suffix }}
         
       - name: Version mode
-        run: echo Version mode is ${{ needs.check_suffix.outputs.mode }}
+        run: echo Version mode is ${{ needs.check_data.outputs.mode }}
         
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
         
       - name: Branch type
-        run: echo running on branch type ${{ needs.check_suffix.outputs.branch-type }}
+        run: echo running on branch type ${{ needs.check_data.outputs.branch-type }}
 
       # Runs a single command using the runners shell
       #- name: Run a one-line script
