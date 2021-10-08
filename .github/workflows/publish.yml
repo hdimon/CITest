@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 #add env variable with version; is suffix is provided then take it, otherwise if dev branch then alpha-GITHUB_RUN_NUMBER suffix (1.14.0-alpha-20), if release then rc-GITHUB_RUN_NUMBER (1.14.0-rc-20)
-name: publish
+name: Publish
 
 # Controls when the workflow will run
 on:
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Version suffix
-        run: echo Version suffix is ${{ inputs.version-suffix }}
+        run: echo Version suffix is ${{ github.event.inputs.version-suffix }}
         
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
