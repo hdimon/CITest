@@ -17,7 +17,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     if: ${{ (startsWith(github.ref, 'refs/heads/dev') || startsWith(github.ref, 'refs/heads/release')) 
-      && (github.event.inputs.version-suffix == '' || github.event.inputs.version-suffix = alpha-\/[0-9]+ || startsWith(github.event.inputs.version-suffix, 'betta-') 
+      && (github.event.inputs.version-suffix == '' || github.event.inputs.version-suffix == alpha-\/[0-9]+ || startsWith(github.event.inputs.version-suffix, 'betta-') 
       || startsWith(github.event.inputs.version-suffix, 'preview-') || startsWith(github.event.inputs.version-suffix, 'cr-')) }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
