@@ -24,6 +24,7 @@ jobs:
         with:
           text: ${{ github.event.inputs.version-suffix }}
           regex: '^(alpha|betta|preview|cr)-[0-9]+$'
+          flags: gm
           
       - name: Match
         run: echo Match is ${{ steps.check-suffix.outputs.match }}
