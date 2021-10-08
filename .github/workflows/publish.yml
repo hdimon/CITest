@@ -38,7 +38,7 @@ jobs:
             if [[ "${{ steps.check-suffix.outputs.group1 }}" == "" ]]; then
                 echo "::set-output name=deviceString::release"
             else
-                echo "::set-output name=deviceString::steps.check-suffix.outputs.group1"
+                echo "::set-output name=deviceString::${{ steps.check-suffix.outputs.group1 }}"
             fi
             
   build:
