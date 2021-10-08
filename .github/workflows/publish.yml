@@ -18,7 +18,7 @@ jobs:
       #run_other_jobs: ${{ steps.check-suffix.outputs.run_jobs }}
     steps:
       - uses: actions-ecosystem/action-regex-match@v2
-      - name: check version suffix ${{ github.event.inputs.version-suffix }}
+        name: check version suffix ${{ github.event.inputs.version-suffix }}
         id: check-suffix
         with:
           text: ${{ github.event.inputs.version-suffix }}
