@@ -23,7 +23,10 @@ jobs:
         id: check-suffix
         with:
           text: ${{ github.event.inputs.version-suffix }}
-          regex: '^/alpha\-[0-9]+$'  
+          regex: '^/alpha[0-9]+$'
+          
+      - name: Match
+        run: echo Match is ${{ steps.check-suffix.outputs.match }}
             
   build:
     needs: [check_suffix]
