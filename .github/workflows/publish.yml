@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version-suffix:
-        description: 'Version suffix (alpha-1, cr-3, ...)'
+        description: 'Version suffix (alpha-1, betta-2, preview-3, cr-4)'
         required: false
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -16,7 +16,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/heads/dev') || startsWith(github.ref, 'refs/heads/release') }}
+    if: ${{ (startsWith(github.ref, 'refs/heads/dev') || startsWith(github.ref, 'refs/heads/release')) 
+      && (github.event.inputs.version-suffix == '' || startsWith(github.event.inputs.version-suffix, 'alpha-') || startsWith(github.event.inputs.version-suffix, 'betta-') 
+      || startsWith(github.event.inputs.version-suffix, 'preview-') || startsWith(github.event.inputs.version-suffix, 'cr-')) }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:       
