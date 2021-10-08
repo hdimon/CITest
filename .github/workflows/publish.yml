@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       match: ${{ steps.check-suffix.outputs.match }}
-      suffix: ${{ steps.check-suffix.outputs.group1 }}
+      mode: ${{ steps.check-suffix.outputs.group1 }}
     steps:
       - uses: actions-ecosystem/action-regex-match@v2
         name: check version suffix ${{ github.event.inputs.version-suffix }}
@@ -24,13 +24,12 @@ jobs:
         with:
           text: ${{ github.event.inputs.version-suffix }}
           regex: '^(alpha|betta|preview|cr)-[0-9]+$'
-          flags: gm
           
       - name: Match
         run: echo Match is ${{ steps.check-suffix.outputs.match }}
         
       - name: Suffix
-        run: echo Suffix is ${{ steps.check-suffix.outputs.suffix }}
+        run: echo Suffix is ${{ steps.check-suffix.outputs.group1 }}
             
   build:
     needs: [check_suffix]
@@ -44,6 +43,9 @@ jobs:
       
       - name: Version suffix
         run: echo Version suffix is ${{ github.event.inputs.version-suffix }}
+        
+      - name: Version mode
+        run: echo Version mode is ${{ needs.check_suffix.outputs.mode }}
         
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
