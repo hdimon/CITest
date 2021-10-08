@@ -15,18 +15,21 @@ jobs:
   check_suffix:
     runs-on: ubuntu-latest
     outputs:
-      #run_other_jobs: ${{ steps.check-suffix.outputs.run_jobs }}
       match: ${{ steps.check-suffix.outputs.match }}
+      suffix: ${{ steps.check-suffix.outputs.group1 }}
     steps:
       - uses: actions-ecosystem/action-regex-match@v2
         name: check version suffix ${{ github.event.inputs.version-suffix }}
         id: check-suffix
         with:
           text: ${{ github.event.inputs.version-suffix }}
-          regex: '^alpha-[0-9]+$'
+          regex: '^(alpha|betta|preview|cr)-[0-9]+$'
           
       - name: Match
         run: echo Match is ${{ steps.check-suffix.outputs.match }}
+        
+      - name: Suffix
+        run: echo Suffix is ${{ steps.check-suffix.outputs.suffix }}
             
   build:
     needs: [check_suffix]
