@@ -66,11 +66,9 @@ function main() {
   if (!env.INPUT_PRERELEASE_TYPE) fail(`ERROR: Input parameter prerelease_type is not defined.`);
         
   const branch = `${env.INPUT_BRANCH}`;
-  const branchName = `${{branch##*/}}`;
   const prereleaseType = `${env.INPUT_PRERELEASE_TYPE}`;
         
   console.log(`Branch: ${branch}`);
-  console.log(`Branch name: ${branchName}`);
   console.log(`Prerelease type: ${prereleaseType}`);
         
   //See if we've already generated the build number and are in later steps...
