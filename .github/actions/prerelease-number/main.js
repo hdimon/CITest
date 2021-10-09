@@ -65,8 +65,8 @@ function main() {
   if (!env.INPUT_BRANCH) fail(`ERROR: Input parameter branch is not defined.`);
   if (!env.INPUT_PRERELEASE_TYPE) fail(`ERROR: Input parameter prerelease_type is not defined.`);
         
-  const branch = ${env.INPUT_BRANCH};
-  const prereleaseType = ${env.INPUT_PRERELEASE_TYPE};
+  const branch = `${env.INPUT_BRANCH}`;
+  const prereleaseType = `${env.INPUT_PRERELEASE_TYPE}`;
         
   console.log(`Branch: ${branch}`);
   console.log(`Prerelease type: ${prereleaseType}`);
