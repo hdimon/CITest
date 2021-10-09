@@ -43,12 +43,27 @@ jobs:
         
       - name: Set mode
         id: set-mode
-        run: |
-            if [[ "${{ github.event.inputs.version-suffix }}" == "" || "${{ steps.check-suffix.outputs.match }}" == "" ]]; then
-                echo "::set-output name=mode::"
-            else
-                echo "::set-output name=mode::${{ steps.check-suffix.outputs.group1 }}"
-            fi
+        run: echo "::set-output name=mode::${{ steps.check-suffix.outputs.group1 }}"
+        
+      - uses: actions-ecosystem/action-regex-match@v2
+        name: Check brach type
+        id: check-brach-type
+        with:
+          text: ${{ github.ref }}
+          regex: '^refs\/heads\/(dev|release)-[0-9]+\.[0-9]+$'
+          
+      - name: Branch type is invalid
+        if: ${{ steps.check-brach-type.outputs.match == '' }}
+        run: exit 1
+          
+      - name: Branch type
+        run: echo running on branch type ${{ steps.check-brach-type.outputs.group1 }}
+        
+      - name: Invalid combination of branch type and release type
+        if: ${{ steps.check-brach-type.outputs.group1 == 'dev' && (steps.set-mode.outputs.mode == "cr" || steps.set-mode.outputs.mode == "release")
+          || steps.check-brach-type.outputs.group1 == 'release' && (steps.set-mode.outputs.mode == "alpha" 
+          || steps.set-mode.outputs.mode == "betta" || steps.set-mode.outputs.mode == "preview") }}
+        run: exit 1
       
       - uses: ./.github/actions/prerelease-number
         if: ${{ steps.set-mode.outputs.mode != 'release' }}
@@ -58,14 +73,6 @@ jobs:
           token: ${{secrets.github_token}}
           branch: ${{steps.get-branch-name.outputs.branch_name}}
           prerelease_type: ${{steps.set-mode.outputs.mode}}
-      
-      - uses: actions-ecosystem/action-regex-match@v2
-        name: Check brach type
-        id: check-brach-type
-        with:
-          text: ${{ github.ref }}
-          regex: '^refs\/heads\/(dev|release)-[0-9]+\.[0-9]+$'
-            
   build:
     needs: [check_data]
     if: ${{ needs.check_data.outputs.mode != '' }}
