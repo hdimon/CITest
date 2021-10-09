@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version-suffix:
-        description: 'Version suffix (alpha-1, betta-2, preview-3, cr-4)'
+        description: 'Release type (alpha, betta, preview, cr, release)'
         required: false
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -32,13 +32,14 @@ jobs:
         id: check-suffix
         with:
           text: ${{ github.event.inputs.version-suffix }}
-          regex: '^(alpha|betta|preview|cr|release)-[0-9]+$'
-                  
-      #- name: Match
-        #run: echo Match is ${{ steps.check-suffix.outputs.match }}
+          regex: '^(alpha|betta|preview|cr|release)$'
+             
+      - name: Release type is invalid
+        if: ${{ steps.check-suffix.outputs.match == '' }}
+        run: exit 1
         
-      - name: Suffix
-        run: echo Suffix is ${{ steps.check-suffix.outputs.group1 }}
+      - name: Release type
+        run: echo Release type is ${{ steps.check-suffix.outputs.group1 }}
         
       - name: Set mode
         id: set-mode
@@ -74,7 +75,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
+            
       - name: Version suffix
         run: echo Version suffix is ${{ github.event.inputs.version-suffix }}
         
