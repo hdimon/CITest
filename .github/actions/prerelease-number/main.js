@@ -104,11 +104,18 @@ function main() {
             for (let i = 0; i < nrTags.length; i++) {
                 console.log(`Tag: ${JSON.stringify(nrTags[i])}`);
             }
-            
-            /*const MAX_OLD_NUMBERS = 5; //One or two ref deletes might fail, but if we have lots then there's something wrong!
-            if (nrTags.length > MAX_OLD_NUMBERS) {
-                fail(`ERROR: Too many ${prefix}build-number- refs in repository, found ${nrTags.length}, expected only 1. Check your tags!`);
-            }*/
+              
+            //Check if commit already has tagm than no need to update it.
+            const tag = nrTags.find((t) => t.object.sha === env.GITHUB_SHA);
+              
+            if (tag) {
+                const existingNumber = parseInt(tag.ref.match(/-(\d+)$/)[1]);
+                console.log(`Prerelease number already generated in earlier jobs, using prerelease number ${existingNumber}...`);
+                //Setting the output and a environment variable to existing prerelease number...
+                fs.writeFileSync(process.env.GITHUB_ENV, `PRERELEASE_NUMBER=${existingNumber}`);
+                console.log(`::set-output name=prerelease_number::${existingNumber}`);
+                return;
+            }            
             
             //Existing prerelease numbers:
             let nrs = nrTags.map(t => parseInt(t.ref.match(/-(\d+)$/)[1]));
@@ -117,8 +124,6 @@ function main() {
     
             let currentPrereleaseNumber = Math.max(...nrs);
             console.log(`Last prerelease number for ${prereleaseType} was ${currentPrereleaseNumber}.`);
-              
-            //Check here if SHA of last tag = current SHA then no need to update number
     
             nextPrereleaseNumber = currentPrereleaseNumber + 1;
             console.log(`Updating prerelease counter to ${nextPrereleaseNumber}...`);
