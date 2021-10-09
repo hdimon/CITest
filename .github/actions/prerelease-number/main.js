@@ -100,10 +100,10 @@ function main() {
             const regex = new RegExp(regexString);
             nrTags = result.filter(d => d.ref.match(regex));
               
-            console.log(`Branch tags:`);
+            /*console.log(`Branch tags:`);
             for (let i = 0; i < nrTags.length; i++) {
                 console.log(`Tag: ${JSON.stringify(nrTags[i])}`);
-            }
+            }*/
               
             //Check if commit already has tagm than no need to update it.
             const tag = nrTags.find((t) => t.object.sha === env.GITHUB_SHA);
@@ -120,7 +120,7 @@ function main() {
             //Existing prerelease numbers:
             let nrs = nrTags.map(t => parseInt(t.ref.match(/-(\d+)$/)[1]));
               
-            console.log(`Prerelease numbers: ${nrs.join(', ')}`);
+            //console.log(`Prerelease numbers: ${nrs.join(', ')}`);
     
             let currentPrereleaseNumber = Math.max(...nrs);
             console.log(`Last prerelease number for ${prereleaseType} was ${currentPrereleaseNumber}.`);
