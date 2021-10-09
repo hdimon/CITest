@@ -31,7 +31,7 @@ jobs:
       - uses: ./.github/actions/prerelease-number
         with:
           token: ${{secrets.github_token}}
-          branch: ${{GITHUB_REF##*/}}
+          branch: ${{github.ref##*/}}
           prerelease_type: "alpha"
           
       #- name: Match
