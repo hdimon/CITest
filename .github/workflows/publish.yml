@@ -34,6 +34,8 @@ jobs:
           regex: '^(alpha|betta|preview|cr|release)-[0-9]+$'
           
       - uses: ./.github/actions/prerelease-number
+        if: ${{ steps.set-mode.outputs.mode != 'release' }}
+        name: Generate prerelease number
         with:
           token: ${{secrets.github_token}}
           branch: ${{steps.get-branch-name.outputs.branch_name}}
