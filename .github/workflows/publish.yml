@@ -26,7 +26,13 @@ jobs:
         id: check-suffix
         with:
           text: ${{ github.event.inputs.version-suffix }}
-          regex: '^(alpha|betta|preview|cr)-[0-9]+$'
+          regex: '^(alpha|betta|preview|cr|release)-[0-9]+$'
+          
+      - uses: ./.github/actions/prerelease-number
+        with:
+          token: ${{secrets.github_token}}
+          branch: ${{ github.ref }}
+          prerelease_type: "alpha"
           
       #- name: Match
         #run: echo Match is ${{ steps.check-suffix.outputs.match }}
@@ -37,8 +43,8 @@ jobs:
       - name: Set mode
         id: set-mode
         run: |
-            if [[ "${{ github.event.inputs.version-suffix }}" == "" || "${{ github.event.inputs.version-suffix }}" == "release" ]]; then
-                echo "::set-output name=mode::release"
+            if [[ "${{ github.event.inputs.version-suffix }}" == "" || "${{ steps.check-suffix.outputs.match }}" == "" ]]; then
+                echo "::set-output name=mode::"
             else
                 echo "::set-output name=mode::${{ steps.check-suffix.outputs.group1 }}"
             fi
