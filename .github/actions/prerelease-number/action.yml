@@ -16,7 +16,7 @@ inputs:
     required: true
 
 outputs:
-  build_number:
+  prerelease_number:
     description: 'Generated prerelease number'
 
 branding:
