@@ -17,6 +17,7 @@ jobs:
     outputs:
       match: ${{ steps.check-suffix.outputs.match }}
       mode: ${{ steps.set-mode.outputs.mode }}
+      prerelease-number: ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
       branch-name: ${{ steps.get-branch-name.outputs.branch_name }}
       branch-type: ${{ steps.check-brach-type.outputs.group1 }}
     steps:
@@ -32,15 +33,7 @@ jobs:
         with:
           text: ${{ github.event.inputs.version-suffix }}
           regex: '^(alpha|betta|preview|cr|release)-[0-9]+$'
-          
-      - uses: ./.github/actions/prerelease-number
-        if: ${{ steps.set-mode.outputs.mode != 'release' }}
-        name: Generate prerelease number
-        with:
-          token: ${{secrets.github_token}}
-          branch: ${{steps.get-branch-name.outputs.branch_name}}
-          prerelease_type: "alpha"
-          
+                  
       #- name: Match
         #run: echo Match is ${{ steps.check-suffix.outputs.match }}
         
@@ -55,7 +48,16 @@ jobs:
             else
                 echo "::set-output name=mode::${{ steps.check-suffix.outputs.group1 }}"
             fi
-            
+      
+      - uses: ./.github/actions/prerelease-number
+        if: ${{ steps.set-mode.outputs.mode != 'release' }}
+        name: Generate prerelease number
+        id: generate-prerelease-number
+        with:
+          token: ${{secrets.github_token}}
+          branch: ${{steps.get-branch-name.outputs.branch_name}}
+          prerelease_type: ${{steps.set-mode.outputs.mode}}
+      
       - uses: actions-ecosystem/action-regex-match@v2
         name: Check brach type
         id: check-brach-type
@@ -78,6 +80,9 @@ jobs:
         
       - name: Version mode
         run: echo Version mode is ${{ needs.check_data.outputs.mode }}
+        
+      - name: Prerelease number
+        run: echo Prerelease number is ${{ needs.check_data.outputs.prerelease-number }}
         
       - name: Branch name
         run: echo running on branch ${{ needs.check_data.outputs.branch-name }}
