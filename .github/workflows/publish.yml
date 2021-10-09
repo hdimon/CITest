@@ -17,9 +17,14 @@ jobs:
     outputs:
       match: ${{ steps.check-suffix.outputs.match }}
       mode: ${{ steps.set-mode.outputs.mode }}
+      branch-name: ${{ steps.get-branch-name.outputs.branch_name }}
       branch-type: ${{ steps.check-brach-type.outputs.group1 }}
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Get branch name
+        id: get-branch-name
+        run: echo "##[set-output name=branch_name;]${GITHUB_REF##*/}"
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Check version suffix ${{ github.event.inputs.version-suffix }}
@@ -31,7 +36,7 @@ jobs:
       - uses: ./.github/actions/prerelease-number
         with:
           token: ${{secrets.github_token}}
-          branch: ${{github.ref##*/}}
+          branch: ${{steps.get-branch-name.outputs.branch_name}}
           prerelease_type: "alpha"
           
       #- name: Match
@@ -73,7 +78,7 @@ jobs:
         run: echo Version mode is ${{ needs.check_data.outputs.mode }}
         
       - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
+        run: echo running on branch ${{ needs.check_data.outputs.branch-name }}
         
       - name: Branch type
         run: echo running on branch type ${{ needs.check_data.outputs.branch-type }}
