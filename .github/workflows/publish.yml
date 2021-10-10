@@ -59,9 +59,9 @@ jobs:
           echo "##[set-output name=solution-major-version;]${steps.parse-solution-version.outputs.group1}"
           echo "##[set-output name=solution-minor-version;]${steps.parse-solution-version.outputs.group2}"
           echo "##[set-output name=solution-patch-version;]${steps.parse-solution-version.outputs.group3}"
-          echo Solution major version is ${{ steps.parse-solution-version.outputs.group1 }}
-          echo Solution minor version is ${{ steps.parse-solution-version.outputs.group2 }}
-          echo Solution patch version is ${{ steps.parse-solution-version.outputs.group3 }}
+          #echo Solution major version is ${{ steps.parse-solution-version.outputs.group1 }}
+          #echo Solution minor version is ${{ steps.parse-solution-version.outputs.group2 }}
+          #echo Solution patch version is ${{ steps.parse-solution-version.outputs.group3 }}
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Parse branch
