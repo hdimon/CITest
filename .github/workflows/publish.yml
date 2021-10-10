@@ -54,11 +54,11 @@ jobs:
           echo Solution version string ${{ steps.get-version_string-based-on-solution.outputs.versionstring }} is invalid
           exit 1
           
-      - name: Show Solution version
-        run: | 
-          echo "##[set-output name=solution-major-version;]${steps.parse-solution-version.outputs.group1}"
-          echo "##[set-output name=solution-minor-version;]${steps.parse-solution-version.outputs.group2}"
-          echo "##[set-output name=solution-patch-version;]${steps.parse-solution-version.outputs.group3}"
+      #- name: Show Solution version
+        #run: | 
+          #echo "##[set-output name=solution-major-version;]${steps.parse-solution-version.outputs.group1}"
+          #echo "##[set-output name=solution-minor-version;]${steps.parse-solution-version.outputs.group2}"
+          #echo "##[set-output name=solution-patch-version;]${steps.parse-solution-version.outputs.group3}"
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Parse branch
@@ -74,12 +74,12 @@ jobs:
       - name: Branch type
         run: echo running on branch type ${{ steps.parse-branch.outputs.group1 }} 
       
-      - name: Show Branch version
-        run: | 
-          echo "##[set-output name=solution-major-version;]${steps.parse-branch.outputs.group2}"
-          echo "##[set-output name=solution-minor-version;]${steps.parse-branch.outputs.group3}"
-          echo Branch major version is ${{ steps.parse-branch.outputs.group2 }}
-          echo Branch minor version is ${{ steps.parse-branch.outputs.group3 }}
+      #- name: Show Branch version
+        #run: | 
+          #echo "##[set-output name=solution-major-version;]${steps.parse-branch.outputs.group2}"
+          #echo "##[set-output name=solution-minor-version;]${steps.parse-branch.outputs.group3}"
+          #echo Branch major version is ${{ steps.parse-branch.outputs.group2 }}
+          #echo Branch minor version is ${{ steps.parse-branch.outputs.group3 }}
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Check version suffix ${{ github.event.inputs.version-suffix }}
@@ -122,6 +122,17 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Show Solution version
+        run: | 
+          echo Solution major version is ${{ needs.check_data.outputs.solution-major-version }}
+          echo Solution minor version is ${{ needs.check_data.outputs.solution-minor-version }}
+          echo Solution patch version is ${{ needs.check_data.outputs.solution-patch-version }}
+          
+      - name: Show Branch version
+        run: | 
+          echo Branch major version is ${{ needs.check_data.outputs.branch-major-version }}
+          echo Branch minor version is ${{ needs.check_data.outputs.branch-minor-version }}
             
       - name: Version suffix
         run: echo Version suffix is ${{ github.event.inputs.version-suffix }}
