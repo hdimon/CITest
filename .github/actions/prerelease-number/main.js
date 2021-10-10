@@ -62,13 +62,13 @@ function request(method, path, data, callback) {
 function main() {
   const path = 'PRERELEASE_NUMBER/PRERELEASE_NUMBER';
         
-  if (!env.INPUT_BRANCH) fail(`ERROR: Input parameter branch is not defined.`);
+  if (!env.INPUT_PREFIX) fail(`ERROR: Input parameter prefix is not defined.`);
   if (!env.INPUT_PRERELEASE_TYPE) fail(`ERROR: Input parameter prerelease_type is not defined.`);
         
-  const branch = `${env.INPUT_BRANCH}`;
+  const prefix = `${env.INPUT_PREFIX}`;
   const prereleaseType = `${env.INPUT_PRERELEASE_TYPE}`;
         
-  console.log(`Branch: ${branch}`);
+  console.log(`Prefix: ${prefix}`);
   console.log(`Prerelease type: ${prereleaseType}`);
         
   //See if we've already generated the build number and are in later steps...
@@ -88,7 +88,7 @@ function main() {
       }
   }
 
-  request('GET', `/repos/${env.GITHUB_REPOSITORY}/git/refs/tags/${branch}-${prereleaseType}-`, null, (err, status, result) => {
+  request('GET', `/repos/${env.GITHUB_REPOSITORY}/git/refs/tags/${prefix}-${prereleaseType}-`, null, (err, status, result) => {
       let nextPrereleaseNumber, nrTags;
           
       if (status === 404) {
@@ -96,11 +96,11 @@ function main() {
           nextPrereleaseNumber = 1;
           nrTags = [];
       } else if (status === 200) {
-            const regexString = `/${branch}-${prereleaseType}-(\\d+)$`;
+            const regexString = `/${prefix}-${prereleaseType}-(\\d+)$`;
             const regex = new RegExp(regexString);
             nrTags = result.filter(d => d.ref.match(regex));
               
-            /*console.log(`Branch tags:`);
+            /*console.log(`Prefix tags:`);
             for (let i = 0; i < nrTags.length; i++) {
                 console.log(`Tag: ${JSON.stringify(nrTags[i])}`);
             }*/
@@ -136,7 +136,7 @@ function main() {
         }
           
         let newRefData = {
-            ref:`refs/tags/${branch}-${prereleaseType}-${nextPrereleaseNumber}`, 
+            ref:`refs/tags/${prefix}-${prereleaseType}-${nextPrereleaseNumber}`, 
             sha: env.GITHUB_SHA
         };
           
