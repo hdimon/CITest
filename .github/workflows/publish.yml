@@ -19,7 +19,7 @@ jobs:
       mode: ${{ steps.set-mode.outputs.mode }}
       prerelease-number: ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
       branch-name: ${{ steps.get-branch-name.outputs.branch_name }}
-      branch-type: ${{ steps.check-brach-type.outputs.group1 }}
+      branch-type: ${{ steps.parse-branch.outputs.group1 }}
       solution-major-version: ${{ steps.parse-solution-version.outputs.group1 }}
       solution-minor-version: ${{ steps.parse-solution-version.outputs.group2 }}
       solution-patch-version: ${{ steps.parse-solution-version.outputs.group3 }}
