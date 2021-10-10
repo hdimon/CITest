@@ -53,12 +53,6 @@ jobs:
         run: | 
           echo Solution version string ${{ steps.get-version_string-based-on-solution.outputs.versionstring }} is invalid
           exit 1
-          
-      #- name: Show Solution version
-        #run: | 
-          #echo "##[set-output name=solution-major-version;]${steps.parse-solution-version.outputs.group1}"
-          #echo "##[set-output name=solution-minor-version;]${steps.parse-solution-version.outputs.group2}"
-          #echo "##[set-output name=solution-patch-version;]${steps.parse-solution-version.outputs.group3}"
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Parse branch
@@ -74,15 +68,8 @@ jobs:
       - name: Branch type
         run: echo running on branch type ${{ steps.parse-branch.outputs.group1 }} 
       
-      #- name: Show Branch version
-        #run: | 
-          #echo "##[set-output name=solution-major-version;]${steps.parse-branch.outputs.group2}"
-          #echo "##[set-output name=solution-minor-version;]${steps.parse-branch.outputs.group3}"
-          #echo Branch major version is ${{ steps.parse-branch.outputs.group2 }}
-          #echo Branch minor version is ${{ steps.parse-branch.outputs.group3 }}
-      
       - name: Validate solution version matches branch version
-        if: ${{ (steps.parse-solution-version.outputs.group1 == steps.parse-branch.outputs.group2 && steps.parse-solution-version.outputs.group2 == steps.parse-branch.outputs.group3) }}
+        if: ${{ !(steps.parse-solution-version.outputs.group1 == steps.parse-branch.outputs.group2 && steps.parse-solution-version.outputs.group2 == steps.parse-branch.outputs.group3) }}
         run: | 
           echo Solution version ${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}} does not match branch version ${{steps.parse-branch.outputs.group2}}.${{steps.parse-branch.outputs.group3}}
           exit 1
