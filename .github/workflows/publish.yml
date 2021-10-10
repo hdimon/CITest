@@ -23,6 +23,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - id: get-version_string-based-on-solution
+        uses: sandersaares-actions/make-version-string@master
+        with:
+          assemblyInfoPath: SharedAssemblyInfo.cs
+          
+      - name: Solution version string
+        run: echo Solution version string is ${{ steps.get-version_string-based-on-solution.outputs.versionstring }}
+      
       - name: Get branch name
         id: get-branch-name
         run: echo "##[set-output name=branch_name;]${GITHUB_REF##*/}"
