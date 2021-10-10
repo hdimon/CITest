@@ -111,7 +111,7 @@ jobs:
         id: generate-prerelease-number
         with:
           token: ${{secrets.github_token}}
-          branch: ${{steps.get-branch-name.outputs.branch_name}}
+          prefix: ${{steps.get-branch-name.outputs.branch_name}}.${{steps.parse-solution-version.outputs.group3}}
           prerelease_type: ${{steps.set-mode.outputs.mode}}
   build:
     needs: [check_data]
