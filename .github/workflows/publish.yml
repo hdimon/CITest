@@ -31,7 +31,7 @@ jobs:
         uses: sandersaares-actions/make-version-string@master
         with:
           assemblyInfoPath: SharedAssemblyInfo.cs
-          primaryBranch: ''
+          primaryBranch: ${{steps.get-branch-name.outputs.branch_name}}
           
       - name: Solution version string
         run: echo Solution version string is ${{ steps.get-version_string-based-on-solution.outputs.versionstring }}
