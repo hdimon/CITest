@@ -8,7 +8,7 @@ on:
     inputs:
       version-suffix:
         description: 'Release type (alpha, betta, preview, cr, release)'
-        required: false
+        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,18 +22,19 @@ jobs:
       branch-type: ${{ steps.check-brach-type.outputs.group1 }}
     steps:
       - uses: actions/checkout@v2
-      
+            
+      - name: Get branch name
+        id: get-branch-name
+        run: echo "##[set-output name=branch_name;]${GITHUB_REF##*/}"
+        
       - id: get-version_string-based-on-solution
         uses: sandersaares-actions/make-version-string@master
         with:
           assemblyInfoPath: SharedAssemblyInfo.cs
+          primaryBranch: steps.get-branch-name.outputs.branch_name
           
       - name: Solution version string
         run: echo Solution version string is ${{ steps.get-version_string-based-on-solution.outputs.versionstring }}
-      
-      - name: Get branch name
-        id: get-branch-name
-        run: echo "##[set-output name=branch_name;]${GITHUB_REF##*/}"
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Check version suffix ${{ github.event.inputs.version-suffix }}
