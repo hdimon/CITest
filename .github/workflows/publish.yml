@@ -81,6 +81,12 @@ jobs:
           #echo Branch major version is ${{ steps.parse-branch.outputs.group2 }}
           #echo Branch minor version is ${{ steps.parse-branch.outputs.group3 }}
       
+      - name: Validate solution version matches branch version
+        if: ${{ (steps.parse-solution-version.outputs.group1 == steps.parse-branch.outputs.group2 && steps.parse-solution-version.outputs.group2 == steps.parse-branch.outputs.group3) }}
+        run: | 
+          echo Solution version ${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}} does not match branch version ${{steps.parse-branch.outputs.group2}}.${{steps.parse-branch.outputs.group3}}
+          exit 1
+      
       - uses: actions-ecosystem/action-regex-match@v2
         name: Check version suffix ${{ github.event.inputs.version-suffix }}
         id: check-suffix
