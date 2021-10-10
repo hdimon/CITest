@@ -20,11 +20,11 @@ jobs:
       prerelease-number: ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
       branch-name: ${{ steps.get-branch-name.outputs.branch_name }}
       branch-type: ${{ steps.check-brach-type.outputs.group1 }}
-      solution-major-version: 0
-      solution-minor-version: 0
-      solution-patch-version: 0
-      branch-major-version: 0
-      branch-minor-version: 0
+      solution-major-version: ${{ steps.parse-solution-version.outputs.group1 }}
+      solution-minor-version: ${{ steps.parse-solution-version.outputs.group2 }}
+      solution-patch-version: ${{ steps.parse-solution-version.outputs.group3 }}
+      branch-major-version: ${{ steps.parse-branch.outputs.group2 }}
+      branch-minor-version: ${{ steps.parse-branch.outputs.group3 }}
     steps:
       - uses: actions/checkout@v2
             
@@ -56,9 +56,33 @@ jobs:
           
       - name: Show Solution version
         run: | 
+          echo "##[set-output name=solution-major-version;]${steps.parse-solution-version.outputs.group1}"
+          echo "##[set-output name=solution-minor-version;]${steps.parse-solution-version.outputs.group2}"
+          echo "##[set-output name=solution-patch-version;]${steps.parse-solution-version.outputs.group3}"
           echo Solution major version is ${{ steps.parse-solution-version.outputs.group1 }}
           echo Solution minor version is ${{ steps.parse-solution-version.outputs.group2 }}
           echo Solution patch version is ${{ steps.parse-solution-version.outputs.group3 }}
+      
+      - uses: actions-ecosystem/action-regex-match@v2
+        name: Parse branch
+        id: parse-branch
+        with:
+          text: ${{ github.ref }}
+          regex: '^refs\/heads\/(dev|release)-([0-9]+)\.([0-9])+$'
+          
+      - name: Branch type is invalid
+        if: ${{ steps.parse-branch.outputs.match == '' }}
+        run: exit 1
+          
+      - name: Branch type
+        run: echo running on branch type ${{ steps.parse-branch.outputs.group1 }} 
+      
+      - name: Show Branch version
+        run: | 
+          echo "##[set-output name=solution-major-version;]${steps.parse-branch.outputs.group2}"
+          echo "##[set-output name=solution-minor-version;]${steps.parse-branch.outputs.group3}"
+          echo Branch major version is ${{ steps.parse-branch.outputs.group2 }}
+          echo Branch minor version is ${{ steps.parse-branch.outputs.group3 }}
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Check version suffix ${{ github.event.inputs.version-suffix }}
@@ -78,23 +102,9 @@ jobs:
         id: set-mode
         run: echo "::set-output name=mode::${{ steps.check-suffix.outputs.group1 }}"
         
-      - uses: actions-ecosystem/action-regex-match@v2
-        name: Check brach type
-        id: check-brach-type
-        with:
-          text: ${{ github.ref }}
-          regex: '^refs\/heads\/(dev|release)-[0-9]+\.[0-9]+$'
-          
-      - name: Branch type is invalid
-        if: ${{ steps.check-brach-type.outputs.match == '' }}
-        run: exit 1
-          
-      - name: Branch type
-        run: echo running on branch type ${{ steps.check-brach-type.outputs.group1 }}
-        
       - name: Invalid combination of branch type and release type
-        if: ${{ steps.check-brach-type.outputs.group1 == 'dev' && (steps.set-mode.outputs.mode == 'cr' || steps.set-mode.outputs.mode == 'release')
-          || steps.check-brach-type.outputs.group1 == 'release' && (steps.set-mode.outputs.mode == 'alpha' 
+        if: ${{ steps.parse-branch.outputs.group1 == 'dev' && (steps.set-mode.outputs.mode == 'cr' || steps.set-mode.outputs.mode == 'release')
+          || steps.parse-branch.outputs.group1 == 'release' && (steps.set-mode.outputs.mode == 'alpha' 
           || steps.set-mode.outputs.mode == 'betta' || steps.set-mode.outputs.mode == 'preview') }}
         run: exit 1
       
