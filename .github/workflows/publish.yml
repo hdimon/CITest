@@ -20,6 +20,11 @@ jobs:
       prerelease-number: ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
       branch-name: ${{ steps.get-branch-name.outputs.branch_name }}
       branch-type: ${{ steps.check-brach-type.outputs.group1 }}
+      solution-major-version: 0
+      solution-minor-version: 0
+      solution-patch-version: 0
+      branch-major-version: 0
+      branch-minor-version: 0
     steps:
       - uses: actions/checkout@v2
             
@@ -35,6 +40,25 @@ jobs:
           
       - name: Solution version string
         run: echo Solution version string is ${{ steps.get-version_string-based-on-solution.outputs.versionstring }}
+        
+      - uses: actions-ecosystem/action-regex-match@v2
+        name: Parse solution version string
+        id: parse-solution-version
+        with:
+          text: ${{ steps.get-version_string-based-on-solution.outputs.versionstring }}
+          regex: '^([0-9]+)\.([0-9]+)\.([0-9]+)\.[0-9]+-.*$'
+          
+      - name: Validate Solution version string
+        if: ${{ steps.parse-solution-version.outputs.match == '' }}
+        run: | 
+          echo Solution version string ${{ steps.get-version_string-based-on-solution.outputs.versionstring }} is invalid
+          exit 1
+          
+      - name: Show Solution version
+        run: | 
+          echo Solution major version is ${{ steps.parse-solution-version.outputs.group1 }}
+          echo Solution minor version is ${{ steps.parse-solution-version.outputs.group2 }}
+          echo Solution patch version is ${{ steps.parse-solution-version.outputs.group3 }}
       
       - uses: actions-ecosystem/action-regex-match@v2
         name: Check version suffix ${{ github.event.inputs.version-suffix }}
