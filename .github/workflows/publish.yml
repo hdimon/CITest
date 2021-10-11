@@ -116,31 +116,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Show Solution version
-        run: | 
+      - name: Show workflow data
+        run: |
+          echo running on branch ${{ needs.check_data.outputs.branch-name }}
+          echo running on branch type ${{ needs.check_data.outputs.branch-type }}
           echo Solution major version is ${{ needs.check_data.outputs.solution-major-version }}
           echo Solution minor version is ${{ needs.check_data.outputs.solution-minor-version }}
           echo Solution patch version is ${{ needs.check_data.outputs.solution-patch-version }}
-          
-      - name: Show Branch version
-        run: | 
           echo Branch major version is ${{ needs.check_data.outputs.branch-major-version }}
           echo Branch minor version is ${{ needs.check_data.outputs.branch-minor-version }}
-            
-      - name: Version suffix
-        run: echo Version suffix is ${{ github.event.inputs.version-suffix }}
-        
-      - name: Version mode
-        run: echo Version mode is ${{ needs.check_data.outputs.mode }}
-        
-      - name: Prerelease number
-        run: echo Prerelease number is ${{ needs.check_data.outputs.prerelease-number }}
-        
-      - name: Branch name
-        run: echo running on branch ${{ needs.check_data.outputs.branch-name }}
-        
-      - name: Branch type
-        run: echo running on branch type ${{ needs.check_data.outputs.branch-type }}
+          echo Version suffix is ${{ github.event.inputs.version-suffix }}
+          echo Version mode is ${{ needs.check_data.outputs.mode }}
+          echo Prerelease number is ${{ needs.check_data.outputs.prerelease-number }}
 
       # Runs a single command using the runners shell
       #- name: Run a one-line script
