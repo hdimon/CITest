@@ -129,6 +129,14 @@ jobs:
           echo Version mode is ${{ needs.check_data.outputs.mode }}
           echo Prerelease number is ${{ needs.check_data.outputs.prerelease-number }}
 
-      # Runs a single command using the runners shell
-      #- name: Run a one-line script
-        #run: echo Hello, world!
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}
+          .${{needs.check_data.outputs.solution-patch-version}}.${{GITHUB_RUN_NUMBER}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
