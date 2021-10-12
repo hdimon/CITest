@@ -138,4 +138,4 @@ jobs:
         run: dotnet restore
         
       - name: Build
-        run: dotnet build -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${GITHUB_RUN_NUMBER} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
+        run: dotnet build -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
