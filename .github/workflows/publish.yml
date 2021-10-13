@@ -137,7 +137,7 @@ jobs:
       
       - name: Tests
         continue-on-error: ${{ github.event.inputs.version-suffix == 'true' || needs.check_data.outputs.mode == 'alpha' || needs.check_data.outputs.mode == 'beta' }}
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test --configuration Release --verbosity normal
           
       
       
