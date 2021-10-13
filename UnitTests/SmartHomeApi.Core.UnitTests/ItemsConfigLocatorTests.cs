@@ -928,7 +928,7 @@ namespace SmartHomeApi.Core.UnitTests
             var configsPath = Path.Join(_appSettings.DataDirectoryPath, ConfigsFolder);
             Directory.CreateDirectory(configsPath);
 
-            var pluginsLocator = new ItemsPluginsLocatorForConfigTests();fdg
+            var pluginsLocator = new ItemsPluginsLocatorForConfigTests();
 
             //Create the first locator
             var itemsLocator1 = new TestItem1ItemLocator();
