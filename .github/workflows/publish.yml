@@ -136,7 +136,7 @@ jobs:
         run: dotnet build -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
       
       - name: Tests
-        continue-on-error: ${{ github.event.inputs.version-suffix == 'true' || needs.check_data.outputs.mode == 'alpha' || needs.check_data.outputs.mode == 'beta' }}
+        continue-on-error: ${{ github.event.inputs.force-publish == 'true' || needs.check_data.outputs.mode == 'alpha' || needs.check_data.outputs.mode == 'beta' }}
         run: dotnet test --configuration Release --verbosity normal
           
       
