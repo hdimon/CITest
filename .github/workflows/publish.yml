@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-#add env variable with version; is suffix is provided then take it, otherwise if dev branch then alpha-GITHUB_RUN_NUMBER suffix (1.14.0-alpha-20), if release then rc-GITHUB_RUN_NUMBER (1.14.0-rc-20)
 name: Publish
 
 # Controls when the workflow will run
@@ -7,7 +5,12 @@ on:
   workflow_dispatch:
     inputs:
       version-suffix:
-        description: 'Release type (alpha, betta, preview, cr, release)'
+        description: 'Release type (alpha, beta, preview, cr, release)'
+        required: true
+      
+      force-publish:
+        description: 'Force publish for release and rc if tests failed'
+        default: 'false'
         required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -79,7 +82,7 @@ jobs:
         id: check-suffix
         with:
           text: ${{ github.event.inputs.version-suffix }}
-          regex: '^(alpha|betta|preview|cr|release)$'
+          regex: '^(alpha|beta|preview|cr|release)$'
              
       - name: Release type is invalid
         if: ${{ steps.check-suffix.outputs.match == '' }}
@@ -95,7 +98,7 @@ jobs:
       - name: Invalid combination of branch type and release type
         if: ${{ steps.parse-branch.outputs.group1 == 'dev' && (steps.set-mode.outputs.mode == 'cr' || steps.set-mode.outputs.mode == 'release')
           || steps.parse-branch.outputs.group1 == 'release' && (steps.set-mode.outputs.mode == 'alpha' 
-          || steps.set-mode.outputs.mode == 'betta' || steps.set-mode.outputs.mode == 'preview') }}
+          || steps.set-mode.outputs.mode == 'beta' || steps.set-mode.outputs.mode == 'preview') }}
         run: exit 1
       
       #- uses: ./.github/actions/prerelease-number
@@ -133,6 +136,7 @@ jobs:
         run: dotnet build -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
       
       - name: Tests
+        continue-on-error: ${{ github.event.inputs.version-suffix == 'true' || needs.check_data.outputs.mode == 'alpha' || needs.check_data.outputs.mode == 'beta' }}
         run: dotnet test --configuration Release --no-build --verbosity normal
           
       
