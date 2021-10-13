@@ -17,7 +17,7 @@ jobs:
     outputs:
       match: ${{ steps.check-suffix.outputs.match }}
       mode: ${{ steps.set-mode.outputs.mode }}
-      prerelease-number: ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
+      #prerelease-number: ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
       branch-name: ${{ steps.get-branch-name.outputs.branch_name }}
       branch-type: ${{ steps.parse-branch.outputs.group1 }}
       solution-major-version: ${{ steps.parse-solution-version.outputs.group1 }}
@@ -98,23 +98,44 @@ jobs:
           || steps.set-mode.outputs.mode == 'betta' || steps.set-mode.outputs.mode == 'preview') }}
         run: exit 1
       
-      - uses: ./.github/actions/prerelease-number
-        if: ${{ steps.set-mode.outputs.mode != 'release' }}
-        name: Generate prerelease number
-        id: generate-prerelease-number
-        with:
-          token: ${{secrets.github_token}}
-          prefix: ${{steps.get-branch-name.outputs.branch_name}}.${{steps.parse-solution-version.outputs.group3}}
-          prerelease_type: ${{steps.set-mode.outputs.mode}}
+      #- uses: ./.github/actions/prerelease-number
+     #  if: ${{ steps.set-mode.outputs.mode != 'release' }}
+     #   name: Generate prerelease number
+      #  id: generate-prerelease-number
+      #  with:
+       #   token: ${{secrets.github_token}}
+       #   prefix: ${{steps.get-branch-name.outputs.branch_name}}.${{steps.parse-solution-version.outputs.group3}}
+      #    prerelease_type: ${{steps.set-mode.outputs.mode}}
+          
   build:
     needs: [check_data]
     if: ${{ needs.check_data.outputs.mode != '' }}
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+        matrix:
+          #RIDs: [win-x64, win-x86, linux-x64, linux-arm, linux-arm64]
+          RIDs: [win-x64]
+    
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+          
+      - name: Restore dependencies
+        run: dotnet restore
+        
+      - name: Test build
+        run: dotnet build -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
+      
+      - name: Tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
+          
+      
       
       - name: Show workflow data
         run: |
@@ -127,8 +148,20 @@ jobs:
           echo Branch minor version is ${{ needs.check_data.outputs.branch-minor-version }}
           echo Version suffix is ${{ github.event.inputs.version-suffix }}
           echo Version mode is ${{ needs.check_data.outputs.mode }}
-          echo Prerelease number is ${{ needs.check_data.outputs.prerelease-number }}
-
-      # Runs a single command using the runners shell
-      #- name: Run a one-line script
-        #run: echo Hello, world!
+          #echo Prerelease number is ${{ needs.check_data.outputs.prerelease-number }}
+          
+   #   - uses: ./.github/actions/prerelease-number
+   #     if: ${{ needs.check_data.outputs.mode != 'release' }}
+   #     name: Generate prerelease number
+   #     id: generate-prerelease-number
+   #     with:
+   #       token: ${{secrets.github_token}}
+   #       prefix: ${{needs.check_data.outputs.branch-name}}.${{needs.check_data.outputs.solution-patch-version}}
+   #       prerelease_type: ${{needs.check_data.outputs.mode}}
+        
+      #- name: Build
+      #  env:
+       #   RID: ${{ matrix.RIDs }}
+       # run: dotnet build -r ${RID} -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
+        
+      
