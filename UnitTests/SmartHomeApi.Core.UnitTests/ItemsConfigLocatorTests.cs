@@ -77,7 +77,7 @@ namespace SmartHomeApi.Core.UnitTests
             return new StandardItemsLocatorBridge(itemsLocator);
         }
 
-        [Test]
+        /*[Test]
         public async Task NoConfigsDirectoryTest()
         {
             var pluginsLocator = new ItemsPluginsLocatorForConfigTests();
@@ -918,7 +918,7 @@ namespace SmartHomeApi.Core.UnitTests
             Assert.AreEqual(0, itemConfigs.Count);
 
             configLocator.Dispose();
-        }
+        }*/
 
         [Test]
         public async Task UpdateOneConfigWithConfigForAnotherItemTypeTest()
@@ -1041,7 +1041,7 @@ namespace SmartHomeApi.Core.UnitTests
             Assert.AreEqual("TestTest", item2Config.TestString1);
         }
 
-        [Test]
+        /*[Test]
         public async Task RemoveInitialItemsLocatorAndThenAddAgainTest()
         {
             int eventsCounter = 0;
@@ -1122,6 +1122,6 @@ namespace SmartHomeApi.Core.UnitTests
             Assert.AreEqual(1, itemConfigs.Count);
 
             configLocator.Dispose();
-        }
+        }*/
     }
 }

@@ -68,7 +68,7 @@ namespace SmartHomeApi.Core.UnitTests
             }
         }
 
-        [Test]
+        /*[Test]
         public async Task NoPluginsDirectoryTest()
         {
             var fabric = new SmartHomeApiStubFabric(_appSettings);
@@ -741,6 +741,6 @@ namespace SmartHomeApi.Core.UnitTests
             Assert.AreEqual(0, itemLocators.Count());
 
             pluginLocator.Dispose();
-        }
+        }*/
     }
 }
