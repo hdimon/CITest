@@ -923,6 +923,8 @@ namespace SmartHomeApi.Core.UnitTests
         [Test]
         public async Task UpdateOneConfigWithConfigForAnotherItemTypeTest()
         {
+            Assert.Fail();
+            
             int eventsCounter = 0;
 
             var configsPath = Path.Join(_appSettings.DataDirectoryPath, ConfigsFolder);
