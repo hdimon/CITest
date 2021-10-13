@@ -128,9 +128,12 @@ jobs:
           
       - name: Restore dependencies
         run: dotnet restore
+        
+      - name: Test build
+        run: dotnet build -p:Version=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release
       
       - name: Tests
-        run: dotnet test --configuration Release --verbosity normal
+        run: dotnet test --configuration Release --no-build --verbosity normal
           
       
       
