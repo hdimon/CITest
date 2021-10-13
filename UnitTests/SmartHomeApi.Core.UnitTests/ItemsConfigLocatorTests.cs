@@ -923,7 +923,7 @@ namespace SmartHomeApi.Core.UnitTests
         [Test]
         public async Task UpdateOneConfigWithConfigForAnotherItemTypeTest()
         {
-            Assert.Fail();
+            //Assert.Fail();
             
             int eventsCounter = 0;
 
