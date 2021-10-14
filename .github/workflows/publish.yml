@@ -152,7 +152,17 @@ jobs:
           echo Version suffix is ${{ github.event.inputs.version-suffix }}
           echo Version mode is ${{ needs.check_data.outputs.mode }}
           echo Prerelease number is ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
+      
+      - name: Set tag name for prerelease versions
+        if: ${{ needs.check_data.outputs.mode != 'release' }}
+        run: |
+          echo "RELEASE_TAG=${{needs.check_data.outputs.branch-type}}-${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}-${{needs.check_data.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}" >> $GITHUB_ENV
           
+      - name: Set tag name for release version
+        if: ${{ needs.check_data.outputs.mode == 'release' }}
+        run: |
+          echo "RELEASE_TAG=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}" >> $GITHUB_ENV
+               
       - name: Update project version
         uses: roryprimrose/set-vs-sdk-project-version@v1
         with:
@@ -161,13 +171,23 @@ jobs:
           fileVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
           informationalVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}-${{needs.check_data.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}
       
-      - name: Build Release
+      - name: Build in Release mode
         env:
           RID: ${{ matrix.RIDs }}
         run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c release -r ${RID} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true
       
-      - name: Build Debug
+      - name: Build in Debug mode
         env:
           RID: ${{ matrix.RIDs }}
         run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c debug -r ${RID} /p:PublishSingleFile=true --self-contained true
       
+      - name: Create Release
+        env:
+          RID: ${{ matrix.RIDs }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/release/net5.0/${RID}/publish/
+          draft: true
+          prerelease: ${{ needs.check_data.outputs.mode != 'release' }}
+          tag_name: ${{env.RELEASE_TAG}}
+          fail_on_unmatched_files: true
