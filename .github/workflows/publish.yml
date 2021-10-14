@@ -182,11 +182,8 @@ jobs:
         run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c debug -r ${RID} /p:PublishSingleFile=true --self-contained true
       
       - name: Create Release
-        env:
-          RID: ${{ matrix.RIDs }}
         uses: softprops/action-gh-release@v1
         with:
-          #files: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/release/net5.0/${RID}/publish/
           draft: true
           prerelease: ${{ needs.check_data.outputs.mode != 'release' }}
           tag_name: ${{env.RELEASE_TAG}}
@@ -198,8 +195,8 @@ jobs:
           RID: ${{ matrix.RIDs }}
         with:
           if-no-files-found: error
-          name: ${{env.RELEASE_TAG}}_$RID
-          path: ./SmartHomeApi.WebApi/bin/release/net5.0/$RID/publish/             
+          name: ${{env.RELEASE_TAG}}_${{env.RID}}
+          path: ./SmartHomeApi.WebApi/bin/release/net5.0/${{env.RID}}/publish/             
           
       - name: Upload Debug Build Artifacts
         uses: actions/upload-artifact@v2
@@ -207,5 +204,5 @@ jobs:
           RID: ${{ matrix.RIDs }}
         with:
           if-no-files-found: error
-          name: ${{env.RELEASE_TAG}}_$RID
-          path: ./SmartHomeApi.WebApi/bin/debug/net5.0/$RID/publish/
+          name: ${{env.RELEASE_TAG}}_${{env.RID}}
+          path: ./SmartHomeApi.WebApi/bin/debug/net5.0/${{env.RID}}/publish/
