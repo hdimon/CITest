@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
