@@ -198,7 +198,7 @@ jobs:
           RID: ${{ matrix.RIDs }}
         with:
           name: ${{env.RELEASE_TAG}}_${RID}
-          path: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/release/net5.0/${RID}/publish/
+          path: ./SmartHomeApi.WebApi/bin/release/net5.0/${RID}/publish/                  
           
       - name: Upload Debug Build Artifacts
         uses: actions/upload-artifact@v2
@@ -206,4 +206,4 @@ jobs:
           RID: ${{ matrix.RIDs }}
         with:
           name: ${{env.RELEASE_TAG}}_${RID}
-          path: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/debug/net5.0/${RID}/publish/
+          path: ./SmartHomeApi.WebApi/bin/debug/net5.0/${RID}/publish/
