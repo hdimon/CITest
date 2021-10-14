@@ -213,6 +213,7 @@ jobs:
         uses: dwenegar/upload-release-assets@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RID: ${{ matrix.RIDs }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
           assets_path: ./SmartHomeApi.WebApi/bin/release/net5.0/${{env.RID}}/publish/
@@ -222,6 +223,7 @@ jobs:
         uses: dwenegar/upload-release-assets@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RID: ${{ matrix.RIDs }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
           assets_path: ./SmartHomeApi.WebApi/bin/debug/net5.0/${{env.RID}}/publish/
