@@ -204,5 +204,5 @@ jobs:
           RID: ${{ matrix.RIDs }}
         with:
           if-no-files-found: error
-          name: ${{env.RELEASE_TAG}}_${{env.RID}}
+          name: ${{env.RELEASE_TAG}}_${{env.RID}}_debug
           path: ./SmartHomeApi.WebApi/bin/debug/net5.0/${{env.RID}}/publish/
