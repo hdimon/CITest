@@ -186,8 +186,24 @@ jobs:
           RID: ${{ matrix.RIDs }}
         uses: softprops/action-gh-release@v1
         with:
-          files: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/release/net5.0/${RID}/publish/
+          #files: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/release/net5.0/${RID}/publish/
           draft: true
           prerelease: ${{ needs.check_data.outputs.mode != 'release' }}
           tag_name: ${{env.RELEASE_TAG}}
           fail_on_unmatched_files: true
+
+      - name: Upload Release Build Artifacts
+        uses: actions/upload-artifact@v2
+        env:
+          RID: ${{ matrix.RIDs }}
+        with:
+          name: ${{env.RELEASE_TAG}}_${RID}
+          path: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/release/net5.0/${RID}/publish/
+          
+      - name: Upload Debug Build Artifacts
+        uses: actions/upload-artifact@v2
+        env:
+          RID: ${{ matrix.RIDs }}
+        with:
+          name: ${{env.RELEASE_TAG}}_${RID}
+          path: /home/runner/work/CITest/CITest/SmartHomeApi.WebApi/bin/debug/net5.0/${RID}/publish/
