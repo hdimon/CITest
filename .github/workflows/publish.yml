@@ -153,7 +153,13 @@ jobs:
           echo Version mode is ${{ needs.check_data.outputs.mode }}
           echo Prerelease number is ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
           
-      
+      - name: Update project version
+        uses: roryprimrose/set-vs-sdk-project-version@v1
+        with:
+          version: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
+          assemblyVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
+          fileVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
+          informationalVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}-${{needs.check_data.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}
         
       #- name: Build
       #  env:
