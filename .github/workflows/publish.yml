@@ -207,12 +207,12 @@ jobs:
       - name: Build in Release mode
         env:
           RID: ${{ matrix.RIDs }}
-        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c release -r ${{env.RID}} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true
+        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Release -r ${{env.RID}} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true
       
       - name: Build in Debug mode
         env:
           RID: ${{ matrix.RIDs }}
-        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c debug -r ${{env.RID}} /p:PublishSingleFile=true --self-contained true
+        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Debug -r ${{env.RID}} /p:PublishSingleFile=true --self-contained true
       
       - name: Create Release
         id: create_release
@@ -230,7 +230,7 @@ jobs:
         with:
           if-no-files-found: error
           name: ${{env.RELEASE_TAG}}_${{env.RID}}
-          path: ./SmartHomeApi.WebApi/bin/release/net5.0/${{env.RID}}/publish/
+          path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
           
       - name: Upload Debug Build Artifacts
         uses: actions/upload-artifact@v2
@@ -239,24 +239,24 @@ jobs:
         with:
           if-no-files-found: error
           name: ${{env.RELEASE_TAG}}_${{env.RID}}_debug
-          path: ./SmartHomeApi.WebApi/bin/debug/net5.0/${{env.RID}}/publish/
+          path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
           
-      - name: Upload Release Assets
-        id: upload-release-assets
-        uses: dwenegar/upload-release-assets@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RID: ${{ matrix.RIDs }}
-        with:
-          release_id: ${{ steps.create_release.outputs.id }}
-          assets_path: ./SmartHomeApi.WebApi/bin/release/net5.0/${{env.RID}}/publish/
+     # - name: Upload Release Assets
+     #   id: upload-release-assets
+     #   uses: dwenegar/upload-release-assets@v1
+     #   env:
+     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     #     RID: ${{ matrix.RIDs }}
+     #   with:
+     #     release_id: ${{ steps.create_release.outputs.id }}
+     #     assets_path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
           
-      - name: Upload Debug Assets
-        id: upload-debug-assets
-        uses: dwenegar/upload-release-assets@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RID: ${{ matrix.RIDs }}
-        with:
-          release_id: ${{ steps.create_release.outputs.id }}
-          assets_path: ./SmartHomeApi.WebApi/bin/debug/net5.0/${{env.RID}}/publish/
+     # - name: Upload Debug Assets
+     #   id: upload-debug-assets
+     #   uses: dwenegar/upload-release-assets@v1
+     #   env:
+     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     #     RID: ${{ matrix.RIDs }}
+     #   with:
+     #     release_id: ${{ steps.create_release.outputs.id }}
+     #     assets_path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
