@@ -153,6 +153,11 @@ jobs:
           echo Version mode is ${{ needs.check_data.outputs.mode }}
           echo Prerelease number is ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
       
+      - name: Restore dependencies
+        env:
+          RID: ${{ matrix.RIDs }}
+        run: dotnet restore -r ${{env.RID}}
+        
       - name: Set tag name for prerelease versions
         if: ${{ needs.check_data.outputs.mode != 'release' }}
         run: |
@@ -207,12 +212,12 @@ jobs:
       - name: Build in Release mode
         env:
           RID: ${{ matrix.RIDs }}
-        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Release -r ${{env.RID}} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true
+        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Release -r ${{env.RID}} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --no-restore
       
       - name: Build in Debug mode
         env:
           RID: ${{ matrix.RIDs }}
-        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Debug -r ${{env.RID}} /p:PublishSingleFile=true --self-contained true
+        run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Debug -r ${{env.RID}} /p:PublishSingleFile=true --self-contained true --no-restore
       
       - name: Create Release
         id: create_release
