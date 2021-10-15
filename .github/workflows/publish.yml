@@ -162,14 +162,47 @@ jobs:
         if: ${{ needs.check_data.outputs.mode == 'release' }}
         run: |
           echo "RELEASE_TAG=${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}" >> $GITHUB_ENV
-               
-      - name: Update project version
-        uses: roryprimrose/set-vs-sdk-project-version@v1
+      
+      - name: Update AssemblyFileVersion in SharedAssemblyInfo.cs
+        uses: mingjun97/file-regex-replace@v1
         with:
-          version: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
-          assemblyVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
-          fileVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
-          informationalVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}-${{needs.check_data.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}
+          regex: 'System.Reflection.AssemblyFileVersion\("(.*)"\)'
+          flags: g
+          replacement: 'System.Reflection.AssemblyFileVersion("${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}")'
+          include: 'SharedAssemblyInfo.cs'
+          exclude: '.^'
+          encoding: 'utf8'
+          
+      - name: Update AssemblyVersion in SharedAssemblyInfo.cs
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'System.Reflection.AssemblyFileVersion\("(.*)"\)'
+          flags: g
+          replacement: 'System.Reflection.AssemblyVersion("${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}")'
+          include: 'SharedAssemblyInfo.cs'
+          exclude: '.^'
+          encoding: 'utf8'
+
+      - name: Update AssemblyInformationalVersion in SharedAssemblyInfo.cs
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'System.Reflection.AssemblyFileVersion\("(.*)"\)'
+          flags: g
+          replacement: 'System.Reflection.AssemblyInformationalVersion("${{env.RELEASE_TAG}}")'
+          include: 'SharedAssemblyInfo.cs'
+          exclude: '.^'
+          encoding: 'utf8'
+      
+      - name: Show SharedAssemblyInfo
+        run: cat SharedAssemblyInfo.cs
+        
+      #- name: Update project version
+      #  uses: roryprimrose/set-vs-sdk-project-version@v1
+      #  with:
+      #    version: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
+      #    assemblyVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
+      #    fileVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}
+      #    informationalVersion: ${{needs.check_data.outputs.solution-major-version}}.${{needs.check_data.outputs.solution-minor-version}}.${{needs.check_data.outputs.solution-patch-version}}.${{github.run_number}}-${{needs.check_data.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}
       
       - name: Build in Release mode
         env:
