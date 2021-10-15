@@ -104,7 +104,8 @@ jobs:
   build:
     needs: [check_data]
     if: ${{ needs.check_data.outputs.mode != '' }}
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     strategy:
         matrix:
