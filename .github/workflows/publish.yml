@@ -114,9 +114,9 @@ jobs:
       - name: Test build
         run: dotnet build -p:Version=${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release --no-restore
       
-      - name: Tests
-        continue-on-error: ${{ github.event.inputs.force-publish == 'true' || steps.set-mode.outputs.mode == 'alpha' || steps.set-mode.outputs.mode == 'beta' }}
-        run: dotnet test --configuration Release --verbosity normal --no-restore
+      #- name: Tests
+      #  continue-on-error: ${{ github.event.inputs.force-publish == 'true' || steps.set-mode.outputs.mode == 'alpha' || steps.set-mode.outputs.mode == 'beta' }}
+      #  run: dotnet test --configuration Release --verbosity normal --no-restore
       
       #If we are at this point it means all checks passed and everything can be published
       - uses: ./.github/actions/prerelease-number
