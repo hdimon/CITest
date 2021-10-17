@@ -111,8 +111,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       
-      - name: Test build
-        run: dotnet build -p:Version=${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release --no-restore
+      #- name: Test build
+      #  run: dotnet build -p:Version=${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}.${{github.run_number}} ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj --configuration Release --no-restore
       
       #- name: Tests
       #  continue-on-error: ${{ github.event.inputs.force-publish == 'true' || steps.set-mode.outputs.mode == 'alpha' || steps.set-mode.outputs.mode == 'beta' }}
@@ -162,7 +162,7 @@ jobs:
         
   build:
     needs: [check_data]
-    if: ${{ needs.check_data.outputs.mode == '' }}
+    if: ${{ needs.check_data.outputs.mode != '' }}
     #runs-on: ubuntu-latest
     runs-on: windows-latest
 
