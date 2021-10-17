@@ -125,7 +125,7 @@ jobs:
         id: generate-prerelease-number
         with:
           token: ${{secrets.github_token}}
-          prefix: ${{steps.get-branch-name.outputs.branch_name}}.${{steps.parse-solution-version.outputs.group3}}
+          prefix: ${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}
           prerelease_type: ${{steps.set-mode.outputs.mode}}
       
       - name: Show workflow data
@@ -144,7 +144,7 @@ jobs:
       - name: Set tag name for prerelease versions
         if: ${{ steps.set-mode.outputs.mode != 'release' }}
         run: |
-          echo "RELEASE_TAG=${{steps.parse-branch.outputs.group1}}-${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}-${{steps.set-mode.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}-${{steps.set-mode.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}" >> $GITHUB_ENV
         #run: echo "::set-output name=release-tag::${{steps.parse-branch.outputs.group1}}-${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}-${{steps.set-mode.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}"
         
       - name: Set tag name for release version
@@ -162,7 +162,7 @@ jobs:
         
   build:
     needs: [check_data]
-    if: ${{ needs.check_data.outputs.mode != '' }}
+    if: ${{ needs.check_data.outputs.mode = '' }}
     #runs-on: ubuntu-latest
     runs-on: windows-latest
 
@@ -222,11 +222,13 @@ jobs:
         run: cat SharedAssemblyInfo.cs
       
       - name: Build in Release mode
+        if: false
         env:
           RID: ${{ matrix.RIDs }}
         run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Release -r ${{env.RID}} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --no-restore
       
       - name: Build in Debug mode
+        if: false
         env:
           RID: ${{ matrix.RIDs }}
         run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Debug -r ${{env.RID}} /p:PublishSingleFile=true --self-contained true --no-restore
