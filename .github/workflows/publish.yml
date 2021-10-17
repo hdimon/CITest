@@ -29,6 +29,7 @@ jobs:
       branch-major-version: ${{ steps.parse-branch.outputs.group2 }}
       branch-minor-version: ${{ steps.parse-branch.outputs.group3 }}
       prerelease-number: ${{ steps.generate-prerelease-number.outputs.prerelease_number }}
+      release-tag: ${{ steps.set-release-tag-output-variable.outputs.release-tag }}
     steps:
       - uses: actions/checkout@v2
             
@@ -144,12 +145,21 @@ jobs:
         if: ${{ steps.set-mode.outputs.mode != 'release' }}
         run: |
           echo "RELEASE_TAG=${{steps.parse-branch.outputs.group1}}-${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}-${{steps.set-mode.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}" >> $GITHUB_ENV
-          
+        #run: echo "::set-output name=release-tag::${{steps.parse-branch.outputs.group1}}-${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}-${{steps.set-mode.outputs.mode}}-${{steps.generate-prerelease-number.outputs.prerelease_number}}"
+        
       - name: Set tag name for release version
         if: ${{ steps.set-mode.outputs.mode == 'release' }}
         run: |
           echo "RELEASE_TAG=${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}" >> $GITHUB_ENV
-          
+        #run: echo "::set-output name=release-tag::${{steps.parse-solution-version.outputs.group1}}.${{steps.parse-solution-version.outputs.group2}}.${{steps.parse-solution-version.outputs.group3}}"
+     
+      - name: Set Release tag output variable
+        id: set-release-tag-output-variable
+        run: echo "::set-output name=release-tag::${{env.RELEASE_TAG}}"
+        
+      - name: Show Release tag
+        run: echo Release tag is ${{ steps.set-release-tag-output-variable.outputs.release-tag }}
+        
   build:
     needs: [check_data]
     if: ${{ needs.check_data.outputs.mode != '' }}
@@ -243,7 +253,7 @@ jobs:
         with:
           regex: 'System.Reflection.AssemblyInformationalVersion\("(.*)"\)'
           flags: g
-          replacement: 'System.Reflection.AssemblyInformationalVersion("${{env.RELEASE_TAG}}")'
+          replacement: 'System.Reflection.AssemblyInformationalVersion("${{needs.check_data.outputs.release-tag}}")'
           include: 'SharedAssemblyInfo.cs'
           exclude: '.^'
           encoding: 'utf8'
@@ -275,26 +285,26 @@ jobs:
         with:
           draft: true
           prerelease: ${{ needs.check_data.outputs.mode != 'release' }}
-          tag_name: ${{env.RELEASE_TAG}}
+          tag_name: ${{needs.check_data.outputs.release-tag}}
           #fail_on_unmatched_files: true
 
-      - name: Upload Release Build Artifacts
-        uses: actions/upload-artifact@v2
-        env:
-          RID: ${{ matrix.RIDs }}
-        with:
-          if-no-files-found: error
-          name: ${{env.RELEASE_TAG}}_${{env.RID}}
-          path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
+      #- name: Upload Release Build Artifacts
+      #  uses: actions/upload-artifact@v2
+      #  env:
+      #    RID: ${{ matrix.RIDs }}
+      #  with:
+      #    if-no-files-found: error
+      #    name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}
+      #    path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
           
-      - name: Upload Debug Build Artifacts
-        uses: actions/upload-artifact@v2
-        env:
-          RID: ${{ matrix.RIDs }}
-        with:
-          if-no-files-found: error
-          name: ${{env.RELEASE_TAG}}_${{env.RID}}_debug
-          path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
+      #- name: Upload Debug Build Artifacts
+      #  uses: actions/upload-artifact@v2
+      #  env:
+      #    RID: ${{ matrix.RIDs }}
+      #  with:
+      #    if-no-files-found: error
+      #    name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}_debug
+      #    path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
           
     #  - name: Upload Release Assets
     #    id: upload-release-assets
