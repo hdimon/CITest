@@ -242,6 +242,13 @@ jobs:
       - name: Pack nuget package
         run: dotnet pack SmartHomeApi.ItemUtils/SmartHomeApi.ItemUtils.csproj --no-build --no-dependencies -p:NuspecProperties="version=${{needs.check_data.outputs.release-tag}" -p:NuspecFile=./NugetPackage/SmartHomeApi.ItemUtils.nuspec /p:OutputPath=./NugetPackage/ --verbosity normal
       
+      # Authenticates packages to push to nuget.org.
+      # It's only the way to push a package to nuget.org feed for macOS/Linux machines due to API key config store limitations.
+      - name: Publish the package to nuget.org
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        run: dotnet nuget push SmartHomeApi.ItemUtils/NugetPackage/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+      
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
