@@ -244,10 +244,14 @@ jobs:
       
       # Authenticates packages to push to nuget.org.
       # It's only the way to push a package to nuget.org feed for macOS/Linux machines due to API key config store limitations.
-      - name: Publish the package to nuget.org
+      #- name: Set nuget config
+      #  run: nuget config -configfile SmartHomeApi.ItemUtils/NugetPackage/NuGet.Config
+      
+      - name: Publish the package to nuget
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
-        run: dotnet nuget push "SmartHomeApi.ItemUtils/NugetPackage/*.nupkg" -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        #run: dotnet nuget push SmartHomeApi.ItemUtils/NugetPackage/*.nupkg -k $NUGET_AUTH_TOKEN
+        run: dotnet nuget push SmartHomeApi.ItemUtils/NugetPackage/SmartHomeApi.ItemUtils.${{needs.check_data.outputs.release-tag}}.nupkg -k ${{env.NUGET_AUTH_TOKEN}} -s https://api.nuget.org/v3/index.json
       
       - name: Create Release
         id: create_release
