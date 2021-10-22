@@ -4,7 +4,7 @@
     <id>SmartHomeApi.ItemUtils</id>
     <version>1.3.8</version>
     <authors>hdimon</authors>
-    <owners>Dmitry Khlybov</owners>
+	<projectUrl>https://github.com/hdimon/SmartHomeApi</projectUrl>
 	<license type="expression">Apache-2.0</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<title>SDK for creating own SmartHomeApi plugins.</title>
