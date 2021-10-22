@@ -250,7 +250,7 @@ jobs:
         run: dotnet nuget push SmartHomeApi.ItemUtils/NugetPackage/SmartHomeApi.ItemUtils.${{needs.check_data.outputs.release-tag}}.nupkg -k ${{env.NUGET_AUTH_TOKEN}} -s https://api.nuget.org/v3/index.json
       
       - name: Create Release
-        if: false
+        #if: false
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
@@ -265,14 +265,14 @@ jobs:
         #run: 7z a -t7z -mx=9 server.7z./src/StupidFirewallManager/bin/release/netcoreapp5.0/publish/
         run: 7z a ${{needs.check_data.outputs.release-tag}}_${{env.RID}}.zip ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
 
-      #- name: Upload Release Build Artifacts
-      #  uses: actions/upload-artifact@v2
-      #  env:
-      #    RID: ${{ matrix.RIDs }}
-      #  with:
-      #    if-no-files-found: error
-      #    name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}
-      #    path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
+      - name: Upload Release Build Artifacts
+        uses: actions/upload-artifact@v2
+        env:
+          RID: ${{ matrix.RIDs }}
+        with:
+          if-no-files-found: error
+          name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}
+          path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
           
       #- name: Upload Debug Build Artifacts
       #  uses: actions/upload-artifact@v2
@@ -283,15 +283,15 @@ jobs:
       #    name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}_debug
       #    path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
           
-    #  - name: Upload Release Assets
-    #    id: upload-release-assets
-    #    uses: dwenegar/upload-release-assets@v1
-    #    env:
-    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #      RID: ${{ matrix.RIDs }}
-    #    with:
-    #      release_id: ${{ steps.create_release.outputs.id }}
-    #      assets_path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
+      - name: Upload Release Assets
+        id: upload-release-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RID: ${{ matrix.RIDs }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
+          assets_path: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}.zip
           
      # - name: Upload Debug Assets
      #   id: upload-debug-assets
