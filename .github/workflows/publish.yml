@@ -226,7 +226,7 @@ jobs:
         run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Release -r ${{env.RID}} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --no-restore
       
       - name: Build in Debug mode
-        if: false
+        #if: false
         env:
           RID: ${{ matrix.RIDs }}
         run: dotnet publish ./SmartHomeApi.WebApi/SmartHomeApi.WebApi.csproj -c Debug -r ${{env.RID}} /p:PublishSingleFile=true --self-contained true --no-restore
@@ -262,8 +262,12 @@ jobs:
       - name: Zip release builds
         env:
           RID: ${{ matrix.RIDs }}
-        #run: 7z a -t7z -mx=9 server.7z./src/StupidFirewallManager/bin/release/netcoreapp5.0/publish/
-        run: 7z a ${{needs.check_data.outputs.release-tag}}_${{env.RID}}.zip ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
+        run: 7z a ${{needs.check_data.outputs.release-tag}}_${{env.RID}}.zip ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/*
+        
+      - name: Zip debug builds
+        env:
+          RID: ${{ matrix.RIDs }}
+        run: 7z a ${{needs.check_data.outputs.release-tag}}_${{env.RID}}-debug.zip ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/*
 
       - name: Upload Release Build Artifacts
         uses: actions/upload-artifact@v2
@@ -274,14 +278,14 @@ jobs:
           name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}
           path: ./SmartHomeApi.WebApi/bin/Release/net5.0/${{env.RID}}/publish/
           
-      #- name: Upload Debug Build Artifacts
-      #  uses: actions/upload-artifact@v2
-      #  env:
-      #    RID: ${{ matrix.RIDs }}
-      #  with:
-      #    if-no-files-found: error
-      #    name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}_debug
-      #    path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
+      - name: Upload Debug Build Artifacts
+        uses: actions/upload-artifact@v2
+        env:
+          RID: ${{ matrix.RIDs }}
+        with:
+          if-no-files-found: error
+          name: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}-debug
+          path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
           
       - name: Upload Release Assets
         id: upload-release-assets
@@ -293,12 +297,13 @@ jobs:
           release_id: ${{ steps.create_release.outputs.id }}
           assets_path: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}.zip
           
-     # - name: Upload Debug Assets
-     #   id: upload-debug-assets
-     #   uses: dwenegar/upload-release-assets@v1
-     #   env:
-     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-     #     RID: ${{ matrix.RIDs }}
-     #   with:
-     #     release_id: ${{ steps.create_release.outputs.id }}
-     #     assets_path: ./SmartHomeApi.WebApi/bin/Debug/net5.0/${{env.RID}}/publish/
+      - name: Upload Debug Assets
+        #if: false #It's enough to have debug build in 
+        id: upload-debug-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RID: ${{ matrix.RIDs }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
+          assets_path: ${{needs.check_data.outputs.release-tag}}_${{env.RID}}-debug.zip
