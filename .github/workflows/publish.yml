@@ -164,7 +164,7 @@ jobs:
   build:
     needs: [check_data]
     if: ${{ needs.check_data.outputs.mode != '' }}
-    #Windows because in ubuntu single file publish does not set versions of .exe file.
+    #Windows because in ubuntu single file publish does not set versions of .exe file (https://github.com/dotnet/core/issues/4964).
     runs-on: windows-latest
 
     strategy:
