@@ -14,7 +14,7 @@ namespace SmartHomeApi.WebApi
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
 
-            AppSettings settings = new AppSettings();
+            AppSettings settings = new AppSettings(); //Another comment.
             config.GetSection("AppSettings").Bind(settings); //Owner comment.
 
             if (!string.IsNullOrWhiteSpace(settings.ApiCulture))
