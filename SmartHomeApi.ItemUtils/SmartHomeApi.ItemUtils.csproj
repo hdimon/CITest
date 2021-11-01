@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+	  <DebugType>embedded</DebugType>
+	  <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Dmitry Khlybov</Authors>
     <Product>SmartHomeApi</Product>
     <Description>SDK for creating own SmartHomeApi plugins.</Description>
     <PackageTags>SmartHomeApi Plugin</PackageTags>
-	<DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
