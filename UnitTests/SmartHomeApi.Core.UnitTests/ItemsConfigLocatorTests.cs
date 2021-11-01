@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Utils;
 using NUnit.Framework;
 using SmartHomeApi.Core.Interfaces;
 using SmartHomeApi.Core.Interfaces.Configuration;
@@ -424,7 +425,9 @@ namespace SmartHomeApi.Core.UnitTests
             var itemConfig = (TestItem1Config)itemConfigs.First();
             Assert.IsNull(itemConfig.TestString);
 
-            File.Copy(Path.Join(_inputTestDataFolder, TestItem1ConfigName), Path.Join(configsPath, TestItem1ConfigName), true);
+            //File.Copy(Path.Join(_inputTestDataFolder, TestItem1ConfigName), Path.Join(configsPath, TestItem1ConfigName), true);
+            await CopyFile(Path.Join(_inputTestDataFolder, TestItem1ConfigName), Path.Join(configsPath, TestItem1ConfigName),
+                true);
 
             ct = new CancellationTokenSource(2000);
             ct.Token.Register(() => tcs1.TrySetResult(false));
@@ -1163,6 +1166,14 @@ namespace SmartHomeApi.Core.UnitTests
             Assert.AreEqual(1, itemConfigs.Count);
 
             configLocator.Dispose();
+        }
+
+        private async Task CopyFile(string sourcePath, string destinationPath, bool overwrite)
+        {
+            await AsyncHelpers.RetryOnFault(async () =>
+            {
+                File.Copy(sourcePath, destinationPath, overwrite);
+            }, 3, () => Task.Delay(1000));
         }
     }
 }
